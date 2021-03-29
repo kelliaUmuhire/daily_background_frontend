@@ -4,7 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { Ionicons } from "@expo/vector-icons";
-import AppLoading from "expo-app-loading";
 
 import Landing from "./Screens/Landing";
 import Profile from "./Screens/Profile";
@@ -17,26 +16,8 @@ const Tab = createMaterialBottomTabNavigator();
 
 const EmptyScreen = () => null;
 
-const fetchFonts = () => {
-  return Font.loadAsync({
-    "nunito-regular": require("./assets/Fonts/Nunito-Regular.ttf"),
-    "nunito-bold": require("./assets/Fonts/Nunito-Bold.ttf"),
-  });
-};
-
 export default function App() {
   const [isAuthenticated, setAuthenticated] = useState(false);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  if (!dataLoaded) {
-    return (
-      <AppLoading
-        startAsync={fetchFonts}
-        onFinish={() => setDataLoaded(true)}
-        onError={(err) => console.log(err)}
-      />
-    );
-  }
 
   return (
     <NavigationContainer>

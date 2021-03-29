@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function Landing() {
+export default function Landing({ navigation }) {
+  console.log("Apppppppppppp");
   return (
     <View style={styles.screen}>
       <View style={styles.imageContainer}>
@@ -11,14 +12,22 @@ export default function Landing() {
           style={styles.image}
         />
       </View>
-      <Text style={styles.title}>Keep you phone wallpaper lit up everday.</Text>
+      <Text style={styles.title}>
+        Keep your phone wallpaper lit up everday.
+      </Text>
       <Text style={styles.content}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget
         ex pharetra, tincidunt nibh et, sollicitudin ligula.
       </Text>
-      <View style={styles.button}>
-        <MaterialCommunityIcons name="chevron-right" size={35} color="white" />
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <View style={styles.button}>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={35}
+            color="white"
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -35,8 +44,8 @@ const styles = StyleSheet.create({
     height: 220,
     overflow: "hidden",
     position: "absolute",
-    top: 50,
-    marginHorizontal: 35,
+    top: 100,
+    marginHorizontal: 120,
   },
   image: {
     width: "100%",
@@ -44,13 +53,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: "bold",
-    fontSize: 25,
-    marginTop: 120,
+    // fontFamily: "nunito-bold",
+    fontSize: 35,
+    marginTop: 300,
+    width: "80%",
   },
   content: {
     fontSize: 16,
     marginTop: 25,
-    fontFamily: "nunito-regular",
   },
   button: {
     borderRadius: 25,
@@ -62,9 +72,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    right: 0,
-    marginHorizontal: 40,
-    bottom: 60,
+    marginHorizontal: 320,
+    marginTop: 80,
   },
 });
