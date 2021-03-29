@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-export default function Login() {
+export default function Login({ navigation }) {
   return (
     <View style={styles.screen}>
       <View style={styles.imageContainer}>
@@ -47,7 +47,7 @@ export default function Login() {
       </View>
       <View style={styles.signup}>
         <Text>Don’t have an account? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
           <Text style={{ textDecorationLine: "underline", fontWeight: "bold" }}>
             Sign Up
           </Text>
