@@ -3,7 +3,6 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function Landing({ navigation }) {
-  console.log("Apppppppppppp");
   return (
     <View style={styles.screen}>
       <View style={styles.imageContainer}>
