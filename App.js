@@ -23,6 +23,15 @@ const EmptyScreen = () => {
   useEffect(() => {
     authenticate(false);
     setUser(null);
+    // try {
+    //   const value = await AsyncStorage.getItem("@token");
+    //   if (value !== null) {
+    //     setUser(jwt_decode(value));
+    //     setToken(value);
+    //   }
+    // } catch (e) {
+    //   // error reading value
+    // }
   }, []);
   return null;
 };
