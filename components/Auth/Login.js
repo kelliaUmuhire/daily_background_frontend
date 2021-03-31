@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,37 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { AppContainer } from "../../App";
 
 export default function Login({ navigation }) {
+  const { isAuthenticated, authenticate } = React.useContext(AppContainer);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
+    axios
+      .post("https://daily-background.herokuapp.com/api/users/login", {
+        email_user_name: email,
+        password,
+      })
+      .then(async (data) => {
+        if (data.data.status == 200) {
+          try {
+            await AsyncStorage.setItem("@token", data.data.data);
+            authenticate(true);
+          } catch (e) {
+            setError(e);
+          }
+        } else {
+          setError(data.data.message);
+        }
+      })
+      .catch((err) => setError(err));
+    // axios.post('')
+  };
   return (
     <View style={styles.screen}>
       <View style={styles.imageContainer}>
@@ -18,16 +47,31 @@ export default function Login({ navigation }) {
         />
       </View>
       <Text style={styles.title}>Login</Text>
+      <Text style={error ? styles.error : { display: "none" }}>{error}</Text>
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Email" style={{ flex: 1 }} />
-        <Image source={require("../../assets/Images/mail.png")} />
+        <TextInput
+          placeholder="Email"
+          style={styles.textInput}
+          onChangeText={setEmail}
+        />
+        <Image
+          source={require("../../assets/Images/mail.png")}
+          style={{ marginTop: 30 }}
+        />
       </View>
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Password" style={{ flex: 1 }} />
-        <Image source={require("../../assets/Images/key.png")} />
+        <TextInput
+          placeholder="Password"
+          style={styles.textInput}
+          onChangeText={setPassword}
+        />
+        <Image
+          source={require("../../assets/Images/key.png")}
+          style={{ marginTop: 30 }}
+        />
       </View>
       <Text style={styles.forgot}>Forgot password?</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleSubmit}>
         <View style={styles.button}>
           <Text style={styles.text}>Sign in</Text>
         </View>
@@ -87,6 +131,12 @@ const styles = StyleSheet.create({
     borderColor: "#AEAEAE",
     paddingBottom: 5,
     width: "95%",
+    // marginHorizontal: 5,
+    // marginTop: 30,
+  },
+  textInput: {
+    flex: 1,
+    marginHorizontal: 5,
     marginHorizontal: 5,
     marginTop: 30,
   },
@@ -134,5 +184,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: 50,
     marginHorizontal: 100,
+  },
+  error: {
+    color: "#ff4d4d",
+    marginTop: 5,
+    marginLeft: 5,
   },
 });
