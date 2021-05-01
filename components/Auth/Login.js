@@ -10,6 +10,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { AppContainer } from "../../App";
+import TitleText from "../Text/TitleText";
+import BodyText from "../Text/BodyText";
 
 export default function Login({ navigation }) {
   const { isAuthenticated, authenticate } = React.useContext(AppContainer);
@@ -18,7 +20,7 @@ export default function Login({ navigation }) {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
-    axios
+    await axios
       .post("https://daily-background.herokuapp.com/api/users/login", {
         email_user_name: email,
         password,
@@ -46,8 +48,10 @@ export default function Login({ navigation }) {
           style={styles.image}
         />
       </View>
-      <Text style={styles.title}>Login</Text>
-      <Text style={error ? styles.error : { display: "none" }}>{error}</Text>
+      <TitleText style={styles.title}>Login</TitleText>
+      <BodyText style={error ? styles.error : { display: "none" }}>
+        {error}
+      </BodyText>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Email"
@@ -70,14 +74,14 @@ export default function Login({ navigation }) {
           style={{ marginTop: 30 }}
         />
       </View>
-      <Text style={styles.forgot}>Forgot password?</Text>
+      <BodyText style={styles.forgot}>Forgot password?</BodyText>
       <TouchableOpacity onPress={handleSubmit}>
         <View style={styles.button}>
-          <Text style={styles.text}>Sign in</Text>
+          <BodyText style={styles.text}>Sign in</BodyText>
         </View>
       </TouchableOpacity>
       <View style={styles.optionContainer}>
-        <Text>Or Login with</Text>
+        <BodyText>Or Login with</BodyText>
         <View style={styles.optionImages}>
           <Image
             source={require("../../assets/Images/google.png")}
@@ -90,11 +94,13 @@ export default function Login({ navigation }) {
         </View>
       </View>
       <View style={styles.signup}>
-        <Text>Don’t have an account? </Text>
+        <BodyText>Don’t have an account? </BodyText>
         <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={{ textDecorationLine: "underline", fontWeight: "bold" }}>
+          <BodyText
+            style={{ textDecorationLine: "underline", fontWeight: "bold" }}
+          >
             Sign Up
-          </Text>
+          </BodyText>
         </TouchableOpacity>
       </View>
     </View>
@@ -111,18 +117,18 @@ const styles = StyleSheet.create({
     width: 100,
     height: 80,
     overflow: "hidden",
-    marginHorizontal: 140,
-    marginVertical: 70,
+    marginHorizontal: 110,
+    marginVertical: 50,
   },
   image: {
     width: "100%",
     height: "100%",
   },
   title: {
-    fontWeight: "bold",
-    // fontFamily: "nunito-bold",
+    // fontWeight: "bold",
+    // // fontFamily: "nunito-bold",
     fontSize: 30,
-    marginHorizontal: 150,
+    marginHorizontal: 120,
     marginBottom: 50,
   },
   inputContainer: {
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "normal",
     marginTop: 15,
-    marginLeft: 280,
+    marginLeft: 220,
   },
   button: {
     borderRadius: 8,
@@ -183,7 +189,7 @@ const styles = StyleSheet.create({
   signup: {
     flexDirection: "row",
     marginTop: 50,
-    marginHorizontal: 100,
+    marginHorizontal: 60,
   },
   error: {
     color: "#ff4d4d",

@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
+import TitleText from "../Text/TitleText";
+import BodyText from "../Text/BodyText";
 
 export default function Register({ navigation }) {
   const [email, setEmail] = useState("");
@@ -42,8 +44,10 @@ export default function Register({ navigation }) {
           style={styles.image}
         />
       </View>
-      <Text style={styles.title}>Create account</Text>
-      <Text style={error ? styles.error : { display: "none" }}>{error}</Text>
+      <TitleText style={styles.title}>Create account</TitleText>
+      <BodyText style={error ? styles.error : { display: "none" }}>
+        {error}
+      </BodyText>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Username"
@@ -70,11 +74,11 @@ export default function Register({ navigation }) {
       </View>
       <TouchableOpacity onPress={handleSubmit}>
         <View style={styles.button}>
-          <Text style={styles.text}>Sign up</Text>
+          <BodyText style={styles.text}>Sign up</BodyText>
         </View>
       </TouchableOpacity>
       <View style={styles.optionContainer}>
-        <Text>Or register with</Text>
+        <BodyText>Or register with</BodyText>
         <View style={styles.optionImages}>
           <Image
             source={require("../../assets/Images/google.png")}
@@ -87,11 +91,13 @@ export default function Register({ navigation }) {
         </View>
       </View>
       <View style={styles.signup}>
-        <Text>Already have an account? </Text>
+        <BodyText>Already have an account? </BodyText>
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-          <Text style={{ textDecorationLine: "underline", fontWeight: "bold" }}>
+          <BodyText
+            style={{ textDecorationLine: "underline", fontWeight: "bold" }}
+          >
             Sign In
-          </Text>
+          </BodyText>
         </TouchableOpacity>
       </View>
     </View>
@@ -108,8 +114,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 80,
     overflow: "hidden",
-    marginHorizontal: 140,
-    marginVertical: 60,
+    marginHorizontal: 110,
+    marginVertical: 50,
   },
   image: {
     width: "100%",
@@ -119,7 +125,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     // fontFamily: "nunito-bold",
     fontSize: 30,
-    marginHorizontal: 90,
+    marginHorizontal: 50,
     marginBottom: 40,
   },
   inputContainer: {
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 65,
+    marginTop: 50,
     // marginLeft: 15,
   },
   text: {
@@ -167,8 +173,8 @@ const styles = StyleSheet.create({
   },
   signup: {
     flexDirection: "row",
-    marginTop: 50,
-    marginHorizontal: 100,
+    marginTop: 20,
+    marginHorizontal: 70,
   },
   error: {
     color: "#ff4d4d",

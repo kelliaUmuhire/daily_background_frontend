@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import BodyText from "../components/Text/BodyText";
+import TitleText from "../components/Text/TitleText";
 
 export default function Landing({ navigation }) {
   return (
@@ -11,13 +13,13 @@ export default function Landing({ navigation }) {
           style={styles.image}
         />
       </View>
-      <Text style={styles.title}>
+      <TitleText style={styles.title}>
         Keep your phone wallpaper lit up everday.
-      </Text>
-      <Text style={styles.content}>
+      </TitleText>
+      <BodyText style={styles.content}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget
         ex pharetra, tincidunt nibh et, sollicitudin ligula.
-      </Text>
+      </BodyText>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <View style={styles.button}>
           <MaterialCommunityIcons
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     backgroundColor: "#FFFFFF",
-    padding: 40,
+    padding: 30,
   },
   imageContainer: {
     width: 220,
@@ -71,7 +73,7 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 320,
+    marginHorizontal: 280,
     marginTop: 80,
   },
 });

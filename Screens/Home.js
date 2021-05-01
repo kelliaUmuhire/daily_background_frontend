@@ -5,21 +5,26 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  FlatList,
   Modal,
   TouchableWithoutFeedback,
+  ScrollView,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { AppContainer } from "../App";
 import axios from "axios";
-import moment from "moment";
+// import WallPaperManager from "react-native-wallpaper-manager";
+
+import Pictures from "../components/Pictures";
+import TitleText from "../components/Text/TitleText";
+import Menu from "../components/Menu";
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);
   const [visibleImg, setVisibleImg] = useState("");
-  const [styleInd, setStyleInd] = useState(0);
   const [userImages, setUserImages] = useState({});
+  const [showMenu, setShowMenu] = useState(false);
+  const [picToday, setPicToday] = useState(0);
   const { user, token } = React.useContext(AppContainer);
 
   useEffect(() => {
@@ -35,34 +40,32 @@ export default function Home() {
         }
       })
       .catch((err) => console.log(err));
-  }, [userImages]);
-  const renderItem = ({ item }) => {
-    // let date = new Date(item.date).toString().split(" ");
-    let date = moment(item.date)
-      .format("dddd, MMMM Do YYYY")
-      .toString()
-      .split(" ");
-    return (
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setModalVisible(true);
-          setVisibleImg(item.regular);
-        }}
-      >
-        <View style={{ flexDirection: styleInd === 1 ? "column" : "row" }}>
-          <Image
-            source={{
-              uri: item.regular,
-            }}
-            style={styles.image2}
-          />
-          <Text
-            style={styles.date}
-          >{`${date[0]}\n${date[1]}  ${date[2]} `}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
+  }, []);
+
+  const changeBackground = () => {
+    axios
+      .get("https://daily-background.herokuapp.com/api/users/load_new_image", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.data.last_pics) {
+          let nowDate = new Date().toISOString().toString().split("T")[0];
+          let picture = res.data.data.last_pics.findIndex(
+            (x) => x.date.toString().split("T")[0] == nowDate
+          );
+          setPicToday(picture);
+          setUserImages(res.data.data);
+          // WallPaperManager.setWallpaper(
+          //   { uri: res.data.data.last_pics[picture].regular },
+          //   (res) => console.log(res)
+          // );
+        }
+      })
+      .catch((err) => console.log(err));
   };
+
   const showModal = (
     <Modal
       animationType={"slide"}
@@ -101,7 +104,7 @@ export default function Home() {
         <Image
           style={{
             width: "100%",
-            height: "90%",
+            height: "100%",
             resizeMode: "cover",
             marginTop: 60,
             borderRadius: 10,
@@ -114,16 +117,28 @@ export default function Home() {
     </Modal>
   );
   return (
-    <View style={styles.screen}>
+    <ScrollView style={styles.screen}>
       <View style={styles.head}>
-        <Entypo name="menu" size={24} color="black" style={{ marginTop: 10 }} />
-        <TouchableOpacity style={styles.button} pressDuration={0.1}>
-          <Text style={{ color: "#ffffff", fontWeight: "bold" }}>
+        <TouchableWithoutFeedback onPress={() => setShowMenu(!showMenu)}>
+          <Entypo
+            name="menu"
+            size={24}
+            color="black"
+            style={{ marginTop: 10 }}
+          />
+        </TouchableWithoutFeedback>
+        <TouchableOpacity
+          style={styles.button}
+          pressDuration={0.1}
+          onPress={() => changeBackground()}
+        >
+          <TitleText style={{ color: "#ffffff", fontWeight: "bold" }}>
             Change background
-          </Text>
+          </TitleText>
         </TouchableOpacity>
       </View>
-      <Text style={styles.greet}>Hey Edwards!</Text>
+      {showMenu && <Menu />}
+      <TitleText style={styles.greet}>Hey {user.user_name}</TitleText>
       <TouchableWithoutFeedback
         onPress={() => {
           setModalVisible(true);
@@ -131,12 +146,12 @@ export default function Home() {
         }}
       >
         <View style={{ marginTop: 50 }}>
-          <Text style={{ fontSize: 18 }}>Today's wallpaper</Text>
+          <TitleText style={{ fontSize: 18 }}>Today's wallpaper</TitleText>
           <Image
             source={{
               uri: userImages.last_pics
                 ? userImages.last_pics[0].regular
-                : "https://jakobzhao.github.io/geeviz/img/loading.gif",
+                : "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
             }}
             style={styles.image}
           />
@@ -144,17 +159,16 @@ export default function Home() {
       </TouchableWithoutFeedback>
 
       <View style={{ marginTop: 30, marginBottom: 80 }}>
-        <Text style={{ fontSize: 18 }}>Recent this week</Text>
-        <FlatList
-          data={userImages.last_pics}
-          contentContainerStyle={{ flexGrow: 0 }}
-          keyExtractor={(item) => item._id}
-          renderItem={renderItem}
-          style={styles.flat}
+        <TitleText style={{ fontSize: 18 }}>Recent this week</TitleText>
+        <Pictures
+          userImages={userImages.last_pics ? userImages.last_pics : []}
+          setModalVisible={setModalVisible}
+          setVisibleImg={setVisibleImg}
+          picToday={picToday}
         />
       </View>
       {showModal}
-    </View>
+    </ScrollView>
   );
 }
 
@@ -163,7 +177,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFFFFF",
     paddingTop: 50,
-    paddingBottom: 80,
+    paddingBottom: 10,
     paddingHorizontal: 15,
     // marginBottom: 40,
   },
@@ -183,7 +197,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   image: {
-    width: 418,
+    width: 360,
     height: 200,
     marginTop: 12,
     borderRadius: 10,

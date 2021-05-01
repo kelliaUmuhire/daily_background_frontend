@@ -3,9 +3,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Foundation } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
 
 import Landing from "./Screens/Landing";
 import Profile from "./Screens/Profile";
@@ -18,11 +22,21 @@ const Tab = createMaterialBottomTabNavigator();
 
 export const AppContainer = React.createContext(null);
 
+const removeToken = async () => {
+  try {
+    await AsyncStorage.removeItem("@token");
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
 const EmptyScreen = () => {
   const { authenticate, setUser } = React.useContext(AppContainer);
   useEffect(() => {
+    removeToken("@token");
     authenticate(false);
-    setUser(null);
     // try {
     //   const value = await AsyncStorage.getItem("@token");
     //   if (value !== null) {
@@ -36,15 +50,23 @@ const EmptyScreen = () => {
   return null;
 };
 
+const fetchFonts = () => {
+  return Font.loadAsync({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+};
+
 export default function App() {
-  const [isAuthenticated, setAuthenticated] = useState(true);
+  const [isAuthenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   const getToken = async () => {
     try {
       const value = await AsyncStorage.getItem("@token");
-      if (value !== null) {
+      if (value) {
         setUser(jwt_decode(value));
         setToken(value);
       }
@@ -54,11 +76,23 @@ export default function App() {
   };
 
   useEffect(() => {
+    fetchFonts();
     getToken();
     if (user) {
+      console.log("user:" + user);
       setAuthenticated(true);
     }
   }, []);
+
+  if (!dataLoaded) {
+    return (
+      <AppLoading
+        startAsync={() => fetchFonts}
+        onFinish={() => setDataLoaded(true)}
+        onError={(err) => console.log(err)}
+      />
+    );
+  }
 
   return (
     <AppContainer.Provider
@@ -99,11 +133,7 @@ export default function App() {
               component={Home}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="home-variant"
-                    size={25}
-                    color={color}
-                  />
+                  <Foundation name="home" size={25} color={color} />
                 ),
               }}
             />
@@ -112,11 +142,7 @@ export default function App() {
               component={EmptyScreen}
               options={{
                 tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="logout"
-                    size={25}
-                    color={color}
-                  />
+                  <MaterialIcons name="logout" size={25} color={color} />
                 ),
               }}
             />
