@@ -50,7 +50,7 @@ const EmptyScreen = () => {
   return null;
 };
 
-const fetchFonts = () => {
+const fetchFonts = async () => {
   return Font.loadAsync({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
     "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
@@ -67,8 +67,8 @@ export default function App() {
     try {
       const value = await AsyncStorage.getItem("@token");
       if (value) {
-        setUser(jwt_decode(value));
-        setToken(value);
+        await setUser(jwt_decode(value));
+        await setToken(value);
       }
     } catch (e) {
       // error reading value
@@ -76,14 +76,16 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchFonts();
-    getToken();
-    if (user) {
-      console.log("user:" + user);
-      setAuthenticated(true);
+    // fetchFonts();
+    if (dataLoaded) {
+      getToken();
+      console.log("User", user);
+      if (user) {
+        console.log("user:" + user);
+        setAuthenticated(true);
+      }
     }
-  }, []);
-
+  }, [user]);
   if (!dataLoaded) {
     return (
       <AppLoading
@@ -94,6 +96,9 @@ export default function App() {
     );
   }
 
+  console.log("Token33:", token);
+  console.log("Authenticated:", isAuthenticated);
+
   return (
     <AppContainer.Provider
       value={{
@@ -102,10 +107,11 @@ export default function App() {
         user,
         setUser,
         token,
+        setToken,
       }}
     >
       <NavigationContainer screenProps={{ authenticated: setAuthenticated }}>
-        {isAuthenticated ? (
+        {isAuthenticated && token !== null ? (
           <Tab.Navigator
             initialRouteName="Home"
             labeled={false}

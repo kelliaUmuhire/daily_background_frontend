@@ -12,9 +12,12 @@ import axios from "axios";
 import { AppContainer } from "../../App";
 import TitleText from "../Text/TitleText";
 import BodyText from "../Text/BodyText";
+import jwt_decode from "jwt-decode";
 
 export default function Login({ navigation }) {
-  const { isAuthenticated, authenticate } = React.useContext(AppContainer);
+  const { isAuthenticated, authenticate, setToken, setUser } = React.useContext(
+    AppContainer
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -29,7 +32,11 @@ export default function Login({ navigation }) {
         if (data.data.status == 200) {
           try {
             await AsyncStorage.setItem("@token", data.data.data);
+            console.log(data.data.data);
             authenticate(true);
+            setToken(data.data.data);
+            setUser(jwt_decode(data.data.data));
+            // navigation.navigate("")
           } catch (e) {
             setError(e);
           }

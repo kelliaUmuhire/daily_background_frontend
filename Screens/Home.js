@@ -26,6 +26,7 @@ export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [picToday, setPicToday] = useState(0);
   const { user, token } = React.useContext(AppContainer);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -37,6 +38,7 @@ export default function Home() {
       .then((data) => {
         if (data.data.user_pic) {
           setUserImages(data.data.user_pic);
+          setLoading(false);
         }
       })
       .catch((err) => console.log(err));
@@ -117,58 +119,70 @@ export default function Home() {
     </Modal>
   );
   return (
-    <ScrollView style={styles.screen}>
-      <View style={styles.head}>
-        <TouchableWithoutFeedback onPress={() => setShowMenu(!showMenu)}>
-          <Entypo
-            name="menu"
-            size={24}
-            color="black"
-            style={{ marginTop: 10 }}
-          />
-        </TouchableWithoutFeedback>
-        <TouchableOpacity
-          style={styles.button}
-          pressDuration={0.1}
-          onPress={() => changeBackground()}
-        >
-          <TitleText style={{ color: "#ffffff", fontWeight: "bold" }}>
-            Change background
-          </TitleText>
-        </TouchableOpacity>
-      </View>
-      {showMenu && <Menu />}
-      <TitleText style={styles.greet}>Hey {user.user_name}</TitleText>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          setModalVisible(true);
-          setVisibleImg(userImages.last_pics[0].regular);
-        }}
-      >
-        <View style={{ marginTop: 50 }}>
-          <TitleText style={{ fontSize: 18 }}>Today's wallpaper</TitleText>
-          <Image
-            source={{
-              uri: userImages.last_pics
-                ? userImages.last_pics[0].regular
-                : "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
+    <>
+      {!loading ? (
+        <ScrollView style={styles.screen}>
+          <View style={styles.head}>
+            <TouchableWithoutFeedback onPress={() => setShowMenu(!showMenu)}>
+              <Entypo
+                name="menu"
+                size={24}
+                color="black"
+                style={{ marginTop: 10 }}
+              />
+            </TouchableWithoutFeedback>
+            <TouchableOpacity
+              style={styles.button}
+              pressDuration={0.1}
+              onPress={() => changeBackground()}
+            >
+              <TitleText style={{ color: "#ffffff", fontWeight: "bold" }}>
+                Change background
+              </TitleText>
+            </TouchableOpacity>
+          </View>
+          {showMenu && <Menu />}
+          <TitleText style={styles.greet}>Hey {user.user_name}</TitleText>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setModalVisible(true);
+              setVisibleImg(userImages.last_pics[0].regular);
             }}
-            style={styles.image}
-          />
-        </View>
-      </TouchableWithoutFeedback>
+          >
+            <View style={{ marginTop: 50 }}>
+              <TitleText style={{ fontSize: 18 }}>Today's wallpaper</TitleText>
+              <Image
+                source={{
+                  uri: userImages.last_pics
+                    ? userImages.last_pics[0].regular
+                    : "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
+                }}
+                style={styles.image}
+              />
+            </View>
+          </TouchableWithoutFeedback>
 
-      <View style={{ marginTop: 30, marginBottom: 80 }}>
-        <TitleText style={{ fontSize: 18 }}>Recent this week</TitleText>
-        <Pictures
-          userImages={userImages.last_pics ? userImages.last_pics : []}
-          setModalVisible={setModalVisible}
-          setVisibleImg={setVisibleImg}
-          picToday={picToday}
+          <View style={{ marginTop: 30, marginBottom: 80 }}>
+            <TitleText style={{ fontSize: 18 }}>Recent this week</TitleText>
+            <Pictures
+              userImages={userImages.last_pics ? userImages.last_pics : []}
+              setModalVisible={setModalVisible}
+              setVisibleImg={setVisibleImg}
+              picToday={picToday}
+            />
+          </View>
+          {showModal}
+        </ScrollView>
+      ) : (
+        <Image
+          source={{
+            uri:
+              "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
+          }}
+          style={styles.image}
         />
-      </View>
-      {showModal}
-    </ScrollView>
+      )}
+    </>
   );
 }
 
