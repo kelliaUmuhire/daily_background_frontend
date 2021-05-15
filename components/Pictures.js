@@ -12,18 +12,19 @@ export default function Pictures({
   userImages,
   setModalVisible,
   setVisibleImg,
+  picToday,
 }) {
   const getDate = (date) => {
     return moment(date).format("dddd, MMMM Do YYYY").toString().split(" ");
   };
 
   const [num, setNum] = useState(0);
-  console.log(userImages.length);
+  // console.log(userImages.length);
   return (
     <View style={{ marginBottom: 30 }}>
       {userImages.length !== 0 ? (
         <View>
-          {0 < userImages.length ? (
+          {0 < userImages.length && 0 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -44,7 +45,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {1 < userImages.length ? (
+          {1 < userImages.length && 1 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -65,7 +66,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {2 < userImages.length ? (
+          {2 < userImages.length && 2 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -86,7 +87,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {3 < userImages.length ? (
+          {3 < userImages.length && 3 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -107,7 +108,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {4 < userImages.length ? (
+          {4 < userImages.length && 4 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -128,7 +129,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {5 < userImages.length ? (
+          {5 < userImages.length && 5 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);
@@ -149,7 +150,7 @@ export default function Pictures({
               </View>
             </TouchableWithoutFeedback>
           ) : null}
-          {6 < userImages.length ? (
+          {6 < userImages.length && 6 !== picToday ? (
             <TouchableWithoutFeedback
               onPress={() => {
                 setModalVisible(true);

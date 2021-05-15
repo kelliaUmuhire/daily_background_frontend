@@ -8,12 +8,13 @@ import {
   Modal,
   TouchableWithoutFeedback,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { AppContainer } from "../App";
 import axios from "axios";
-// import WallPaperManager from "react-native-wallpaper-manager";
+import WallPaperManager from "react-native-wallpaper-manager";
 
 import Pictures from "../components/Pictures";
 import TitleText from "../components/Text/TitleText";
@@ -38,12 +39,27 @@ export default function Home() {
       .then((data) => {
         if (data.data.user_pic) {
           setUserImages(data.data.user_pic);
+          let maxDate = data.data.user_pic.last_pics[0].date;
+          let indic = -1;
+          for (let i = 1; i < data.data.user_pic.last_pics.length; i++) {
+            if (maxDate < data.data.user_pic.last_pics[i].date) {
+              maxDate = data.data.user_pic.last_pics[i].date;
+              indic = i;
+            }
+          }
+          if (
+            maxDate.toString().split("T")[0] ==
+            new Date().toISOString().toString().split("T")[0]
+          ) {
+            setPicToday(indic);
+          } else {
+            changeBackground();
+          }
           setLoading(false);
         }
       })
       .catch((err) => console.log(err));
   }, []);
-
   const changeBackground = () => {
     axios
       .get("https://daily-background.herokuapp.com/api/users/load_new_image", {
@@ -66,6 +82,13 @@ export default function Home() {
         }
       })
       .catch((err) => console.log(err));
+  };
+
+  const setWallpaper = () => {
+    const imgUrl =
+      "https://images.unsplash.com/photo-1602452605960-c46e781e1ecf?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max";
+    // WallPaperManager.setWallpaper({ uri: imgUrl }, (res) => console.log(res))
+    WallPaperManager.setWallpaper({ uri: imgUrl }, (res) => console.log(res));
   };
 
   const showModal = (
@@ -134,7 +157,7 @@ export default function Home() {
             <TouchableOpacity
               style={styles.button}
               pressDuration={0.1}
-              onPress={() => changeBackground()}
+              onPress={() => setWallpaper()}
             >
               <TitleText style={{ color: "#ffffff", fontWeight: "bold" }}>
                 Change background
@@ -154,7 +177,7 @@ export default function Home() {
               <Image
                 source={{
                   uri: userImages.last_pics
-                    ? userImages.last_pics[0].regular
+                    ? userImages.last_pics[picToday].regular
                     : "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
                 }}
                 style={styles.image}
@@ -174,13 +197,7 @@ export default function Home() {
           {showModal}
         </ScrollView>
       ) : (
-        <Image
-          source={{
-            uri:
-              "https://mir-s3-cdn-cf.behance.net/project_modules/disp/552dd336197347.57136163e85ec.gif",
-          }}
-          style={styles.image}
-        />
+        <ActivityIndicator />
       )}
     </>
   );

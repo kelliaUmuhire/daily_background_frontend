@@ -50,18 +50,17 @@ const EmptyScreen = () => {
   return null;
 };
 
-const fetchFonts = async () => {
-  return Font.loadAsync({
-    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
-    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
-  });
-};
-
 export default function App() {
   const [isAuthenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  // const [loaded] = useFonts({
+  //   opensans: require("./assets/fonts/OpenSans-Regular.ttf"),
+  //   // "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  //   "material-community": require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"),
+  // });
 
   const getToken = async () => {
     try {
@@ -75,29 +74,61 @@ export default function App() {
     }
   };
 
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      // Load a font `Montserrat` from a static resource
+      // Montserrat: require('./assets/fonts/Montserrat.ttf'),
+
+      // // Any string can be used as the fontFamily name. Here we use an object to provide more control
+      // 'Montserrat-SemiBold': {
+      //   uri: require('./assets/fonts/Montserrat-SemiBold.ttf'),
+      //   display: Font.FontDisplay.FALLBACK,
+      // },
+      "material-community": {
+        uri: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"),
+        display: Font.FontDisplay.FALLBACK,
+      },
+    });
+    setDataLoaded(true);
+  };
+
   useEffect(() => {
     // fetchFonts();
+    loadFonts();
     if (dataLoaded) {
       getToken();
-      console.log("User", user);
+      // console.log("User", user);
       if (user) {
-        console.log("user:" + user);
+        // console.log("user:" + user);
         setAuthenticated(true);
       }
     }
-  }, [user]);
+  }, []);
+
+  const fetchFonts = async () => {
+    return await Font.loadAsync({
+      "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+      "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+      "material-community": require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"),
+    });
+  };
+
+  // if (!dataLoaded) {
+  //   return (
+  //     <AppLoading
+  //       startAsync={() => fetchFonts}
+  //       onFinish={() => setDataLoaded(true)}
+  //       onError={(err) => console.log(err)}
+  //     />
+  //   );
+  // }
+
   if (!dataLoaded) {
-    return (
-      <AppLoading
-        startAsync={() => fetchFonts}
-        onFinish={() => setDataLoaded(true)}
-        onError={(err) => console.log(err)}
-      />
-    );
+    return null;
   }
 
-  console.log("Token33:", token);
-  console.log("Authenticated:", isAuthenticated);
+  // console.log("Token33:", token);
+  // console.log("Authenticated:", isAuthenticated);
 
   return (
     <AppContainer.Provider
