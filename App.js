@@ -51,7 +51,7 @@ const EmptyScreen = () => {
 };
 
 export default function App() {
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(true);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -141,10 +141,11 @@ export default function App() {
         setToken,
       }}
     >
+      {/* && token !== null */}
       <NavigationContainer screenProps={{ authenticated: setAuthenticated }}>
-        {isAuthenticated && token !== null ? (
+        {isAuthenticated ? (
           <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="Profile"
             labeled={false}
             activeColor="#FBFBFB"
             inactiveColor="#FFBEBD"
